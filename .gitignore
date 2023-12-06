@@ -1,0 +1,5 @@
+.idea
+/node_modules
+/certificates
+.parameters.js
+.env

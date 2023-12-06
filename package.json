@@ -1,0 +1,17 @@
+{
+  "name": "computop-paypal-express-demo",
+  "version": "1.0.0",
+  "description": "Demonstration of Computop Paypal Express Checkout usage.",
+  "keywords": ["Computop", "PayPal-Express-Checkout", "Demo"],
+  "author": "Andrey Bobkov, https://github.com/a-bobkov",
+  "license": "Unlicense",
+  "type": "module",
+  "main": "shortcut.js",
+  "engines": {
+    "node": ">=14.16"
+  },
+  "dependencies": {
+    "computop-node-client": "^0.2.7",
+    "open": "^9.1.0"
+  }
+}
