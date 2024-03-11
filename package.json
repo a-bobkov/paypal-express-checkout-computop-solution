@@ -1,12 +1,12 @@
 {
-  "name": "computop-paypal-express-demo",
+  "name": "paypal-express-checkout-computop-solution",
   "version": "1.0.0",
-  "description": "Demonstration of Computop Paypal Express Checkout usage.",
-  "keywords": ["Computop", "PayPal-Express-Checkout", "Demo"],
+  "description": "PayPal Express Checkout Solution for Computop Node.js API",
+  "keywords": ["PayPal-Express-Checkout", "Computop", "PaymentIntegration"],
   "author": "Andrey Bobkov, https://github.com/a-bobkov",
-  "license": "Unlicense",
+  "license": "MIT",
   "type": "module",
-  "main": "shortcut.js",
+  "main": "testPaypalExpressCheckoutComputopSolution.js",
   "engines": {
     "node": ">=14.16"
   },

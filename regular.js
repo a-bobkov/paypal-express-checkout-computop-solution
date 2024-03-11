@@ -15,21 +15,21 @@ const hostname = 'localhost';
 const port = 3000;
 
 await testComputopPaypalRegular({
-    TransID: generateTransId(),
+    OrderDesc: 'Name:Laterne schwarz-Sku:3651462-00000-Quantity:1',
     Currency: 'EUR',
     Amount: '5594',
     TaxTotal: '893',
     ItemTotal: '4106',
     shAmount: '595',
-    OrderDesc: 'Name:Laterne schwarz-Sku:3651462-00000-Quantity:1',
-    FirstName: 'Franz',
-    LastName: 'Kafka',
-    AddrStreet: 'Teststraße 22',
-    AddrStreet2: 'c/o Schwarzmann',
-    AddrCity: 'Ottobrunn',
-    AddrZip: '85521',
+    FirstName: 'Andrey',
+    LastName: 'Bobkov',
+    AddrStreet: 'St.-Martin-Straße 102',
+    AddrStreet2: 'c/o Mediawave',
+    AddrCity: 'München',
+    AddrZip: '81669',
     AddrCountryCode: 'DE',
     RefNr: generateRefNr(),
+    TransID: generateTransId(),
 });
 
 async function testComputopPaypalRegular(order)
@@ -61,7 +61,7 @@ async function startComputopPaypalRegular(order)
 
 function prepareStartComputopPaypalRegularUrl(orderParameters)
 {
-    const requestParameters = Object.assign({
+    const requestParameters = {
         ReqID: generateReqId(),
         Capture: 'Auto',
         // TxType: 'Auth',
@@ -69,7 +69,8 @@ function prepareStartComputopPaypalRegularUrl(orderParameters)
         URLFailure: `https://${hostname}:${port}/computop-pay-pal-failure`,
         URLNotify: `https://${hostname}:${port}/computop-pay-pal-notify`,
         Response: 'encrypt',
-    }, orderParameters);
+        ...orderParameters,
+    };
 
     const macKey = [
         requestParameters.PayID,
@@ -102,8 +103,8 @@ async function requestStartComputopPaypalRegular(url)
     const browser = await open(url);
 
     const serverOptions = {
-        key: await fs.readFile('certificates/localhost-key.pem'),
-        cert: await fs.readFile('certificates/localhost.pem'),
+        key: await fs.readFile('certificate/localhost-key.pem'),
+        cert: await fs.readFile('certificate/localhost.pem'),
     };
 
     const httpServer = https.createServer(serverOptions);
@@ -121,8 +122,6 @@ async function requestStartComputopPaypalRegular(url)
 
     httpServer.closeAllConnections();
     httpServer.close();
-
-    browser.kill('SIGINT');
 
     return `https://${hostname}:${port}${request.url}`;
 }
@@ -161,13 +160,14 @@ async function completeComputopPaypalRegular(order, mergeProperties)
 
 function prepareCompleteComputopPaypalRegularRequest(order, mergeProperties)
 {
-    const requestParameters = Object.assign({
+    const requestParameters = {
         ReqID: generateReqId(),
         TransID: order.TransID,
         Amount: order.Amount,
         Currency: order.Currency,
         Response: 'encrypt',
-    }, mergeProperties);
+        ...mergeProperties,
+    };
 
     const keyMac = [
         requestParameters.PayID,
@@ -204,15 +204,13 @@ function prepareCompleteComputopPaypalRegularRequest(order, mergeProperties)
     };
 }
 
-async function executeCompleteComputopPaypalRegularRequest({body, ...options})
+async function executeCompleteComputopPaypalRegularRequest({ body, ...options })
 {
     const request = https.request(options);
 
     request.end(body);
 
-    await events.once(request, 'response');
-
-    const response = request.res;   // events.once above returns not workable response with prototype Object(0)
+    const [response] = await events.once(request, 'response');
 
     const responseChunks = [];
 
